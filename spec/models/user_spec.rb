@@ -205,4 +205,24 @@ describe User do
     end
   end
 
+  describe "Relationships" do
+    let(:first_user) { FactoryGirl.create(:user) }
+    let(:second_user) { FactoryGirl.create(:user) }
+
+    before do
+      first_user.save
+      first_user.follow!(second_user)
+    end
+    it "should destroy associated relationships" do
+      relationships = first_user.relationships.to_a
+      first_user.destroy
+      relationships.should_not be_empty
+      relationships.each do |r|
+        expect(Relationship.where(id: r.id)).to be_empty
+      end
+    end
+
+  end
+
+
 end
